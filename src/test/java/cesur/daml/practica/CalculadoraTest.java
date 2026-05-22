@@ -1,93 +1,110 @@
 package cesur.daml.practica;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("Pruebas unitarias para la clase Calculadora según ISO 29119")
+@DisplayName("Pruebas Unitarias Avanzadas - ISO/IEC 29119")
 public class CalculadoraTest {
 
-    // --- PRUEBAS DE SUMA ---
+    private Calculadora calc;
+
+    @BeforeEach
+    void setUp() {
+        calc = new Calculadora(); [cite: 338]
+    }
+
     @Test
-    @DisplayName("Suma de dos números positivos")
+    @DisplayName("Suma de dos números positivos comunes")
     void testSumarPositivos() {
-        // Diseñado
+        assertEquals(8.5, calc.sumar(5.0, 3.5), 0.001, "5.0 + 3.5 debería ser 8.5");
     }
 
     @Test
     @DisplayName("Suma de dos números negativos")
     void testSumarNegativos() {
-        // Diseñado
+        assertEquals(-6.0, calc.sumar(-2.0, -4.0), 0.001);
     }
 
-    // --- PRUEBAS DE RESTA ---
     @Test
-    @DisplayName("Resta de dos números positivos")
+    @DisplayName("Suma con valor frontera (Elemento neutro cero)")
+    void testSumarCero() {
+        assertEquals(10.0, calc.sumar(10.0, 0.0), 0.001);
+    }
+
+    @Test
+    @DisplayName("Resta básica de dos números positivos")
     void testRestarPositivos() {
-        // Diseñado
+        assertEquals(6.0, calc.restar(10.0, 4.0), 0.001);
     }
 
     @Test
-    @DisplayName("Resta con resultado negativo")
+    @DisplayName("Resta cuyo resultado produce un número negativo")
     void testRestarResultadoNegativo() {
-        // Diseñado
+        assertEquals(-3.0, calc.restar(2.0, 5.0), 0.001);
     }
 
-    // --- PRUEBAS DE MULTIPLICACIÓN ---
     @Test
-    @DisplayName("Multiplicación por cero devuelve cero")
+    @DisplayName("Multiplicación por cero (Caso Límite)")
     void testMultiplicarPorCero() {
-        // Diseñado
+        assertEquals(0.0, calc.multiplicar(6.0, 0.0), 0.001);
     }
 
     @Test
-    @DisplayName("Multiplicación de dos números negativos")
+    @DisplayName("Multiplicación de dos números negativos (Regla de signos)")
     void testMultiplicarNegativos() {
-        // Diseñado
+        assertEquals(9.0, calc.multiplicar(-3.0, -3.0), 0.001);
     }
 
-    // --- PRUEBAS DE DIVISIÓN ---
     @Test
-    @DisplayName("División normal de dos números")
+    @DisplayName("División exacta estándar")
     void testDividirNormal() {
-        // Diseñado
+        assertEquals(5.0, calc.dividir(10.0, 2.0), 0.001);
     }
 
     @Test
     @DisplayName("Dividir entre cero debe lanzar ArithmeticException")
     void testDividirPorCeroDeboLanzarExcepcion() {
-        // Diseñado
+        // El enunciado requiere capturar ArithmeticException en divisiones por cero
+        assertThrows(ArithmeticException.class, () -> calc.dividir(10.0, 0.0)); [cite: 345]
     }
 
-    // --- PRUEBAS DE MÁXIMO (Caja Blanca) ---
     @Test
-    @DisplayName("El máximo cuando el primer parámetro es mayor")
+    @DisplayName("Caja Blanca: Primer parámetro es mayor (Debería devolver 'a')")
     void testMaximoPrimerValorMayor() {
-        // Diseñado
+        assertEquals(8.0, calc.maximo(8.0, 3.0), 0.001);
     }
 
     @Test
-    @DisplayName("El máximo cuando el segundo parámetro es mayor")
+    @DisplayName("Caja Blanca: Segundo parámetro es mayor (Debería devolver 'b')")
     void testMaximoSegundoValorMayor() {
-        // Diseñado
+        assertEquals(4.0, calc.maximo(1.0, 4.0), 0.001);
     }
 
     @Test
-    @DisplayName("El máximo cuando ambos valores son iguales")
+    @DisplayName("Caja Negra: Ambos valores son idénticos (Valor límite)")
     void testMaximoValoresIguales() {
-        // Diseñado
+        assertEquals(5.0, calc.maximo(5.0, 5.0), 0.001);
     }
 
-    // --- PRUEBAS DE PORCENTAJE ---
-    @Test
-    @DisplayName("Cálculo normal de un porcentaje sobre un total")
-    void testPorcentajeNormal() {
-        // Diseñado
+    @ParameterizedTest
+    @CsvSource({
+        "25.0, 200.0, 12.5",
+        "50.0, 100.0, 50.0",
+        "0.0, 500.0, 0.0"
+    })
+    @DisplayName("Cálculo de porcentaje sobre un total")
+    void testPorcentajeParametrizados(double valor, double total, double resultadoEsperado) {
+        assertEquals(resultadoEsperado, calc.porcentaje(valor, total), 0.001);
     }
 
     @Test
-    @DisplayName("Porcentaje cuando el total es cero")
+    @DisplayName("Porcentaje cuando el total es cero (Caso límite frontera)")
     void testPorcentajeTotalCero() {
-        // Diseñado
+        assertEquals(0.0, calc.porcentaje(10.0, 0.0), 0.001);
     }
 }
